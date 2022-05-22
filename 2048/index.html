@@ -1,1 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>2048</title>
+    <style>
 
+
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: #faf8ef;
+            color: #776E65;
+            font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+            font-size: 18px;
+        }
+
+
+        .heading:after {
+            content: "";
+            display: block;
+            clear: both;
+        }
+
+
+        h1.title {
+            font-size: 80px;
+            font-weight: bold;
+            margin: 0;
+            display: block;
+            float: left;
+
+        }
+
+        .score-container {
+            height: 25px;
+            position: relative;
+            float: right;
+            background: #bbada0;
+            padding: 15px 25px;
+            font-size: 25px;
+            line-height: 25px+20px;
+            font-weight: bold;
+            border-radius: 3px;
+            color: white;
+            margin-top: 8px;
+        }
+
+        &:after {
+             position: absolute;
+             width: 100%;
+             top: 10px;
+             left: 0;
+             content: "Score";
+             text-transform: uppercase;
+             font-size: 13px;
+             line-height: 13px;
+             text-align: center;
+             color: #776E65;
+         }
+
+
+
+        .cell {
+            float:          left;
+            width:          100px;
+            height:         100px;
+            margin:         7px;
+            background:     #cdc1b4;
+            border-width:   0px;
+            border-style:   solid;
+            border-color:   #bbada0;
+            border-collapse:collapse;
+            border-radius:  6px;
+            font-size:      60px;
+            left:           50%;
+            opacity:        100;
+            line-height:    100px;
+            text-align:     center;
+            font-weight:    bold;
+
+
+        }
+        .cell:hover {
+            background:     lightgoldenrodyellow;
+
+        }
+
+        .grid  {
+            position:       relative;
+            width:          456px;
+            height:         456px;
+            background:     #bbada0;
+            top:            100px;
+            left:           50%;
+            transform:      translateX(-50%);
+            border-radius:  6px;
+            border-width:   12px;
+            border-style:   solid;
+            border-color:   #bbada0;
+
+        }
+
+
+        body {
+            width:          500px;
+            height:         500px;
+            margin:         0 auto;
+            font-family:    "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+        }
+
+        div[data-number="2"]    {background: #eee4da}
+        div[data-number="4"]    {background: #ede0d8}
+        div[data-number="8"]    {background: #f2b179;color:#f9f6f2}
+        div[data-number="16"]   {background: #f59563;color:#f9f6f2}
+        div[data-number="32"]   {background: #f67c5f;color:#f9f6f2}
+        div[data-number="64"]   {background: #f65e3b;color:#f9f6f2}
+        div[data-number="128"]  {background: #edcf72;color:#f9f6f2}
+        div[data-number="256"]  {background: #edcc61;color:#f9f6f2}
+        div[data-number="512"]  {background: #ed9961;color:#f9f6f2}
+        div[data-number="1024"] {background: #ed6661;color:#f9f6f2}
+        div[data-number="2048"] {background: #ed3361;color:#f9f6f2}
+
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="heading">
+        <h1 class="title">2048</h1>
+        <div class="score-container">0</div>
+    </div>
+    <p class="game-intro">Welcome to the <strong>2048 tile!</strong></br>Enjoy your 2048 Game</p>
+
+    <div class="grid clearfix">
+        <div id="bottom">
+        </div>
+    </div>
+
+</div>
+<script>
+
+    class Cell {
+        constructor(number, dx, dy) {
+            this.number = number
+            this.dx = dx
+            this.dy = dy
+        }
+    }
+
+    const log = console.log.bind(console)
+
+    const e = function (selector) {
+        let element = document.querySelector(selector)
+        if (element === null) {
+            let s = `选择器 ${selector} 错误`
+            alert(s)
+            return null
+        } else {
+            return element
+        }
+    }
+
+    const es = function (selector) {
+        let elements = document.querySelectorAll(selector)
+        if (elements.length === 0) {
+            let s = `GAME OVER`
+            alert(s)
+            location.reload()
+            //
+            return []
+        } else {
+            return elements
+        }
+    }
+
+    const score = function (c) {
+            let self = e('.score-container')
+            let s = Number(self.innerHTML)
+            self.innerHTML = s + c.number/2
+
+    }
+
+    const moverow = function (array) {
+        for (let i = 0; i < 4; i++) {
+            let s = array[i]
+            for (let j = 0; j < 3; j++) {
+                let c = s[j]
+                for (let k = j+1; k < 4; k++) {
+                    if(s[k].number !== 0) {
+                        let nextc = s[k]
+                        if (c.number === 0) {
+                            c.number = nextc.number
+                            nextc.number = 0
+                        }else  if (c.number === nextc.number) {
+                            c.number *= 2
+                            score(c)
+                            nextc.number = 0
+                        }
+                        break
+                    }
+                }
+            }
+        }
+    }
+
+    const newgame = () => {
+        let cs = []
+        let number = 0
+        for (let i = 0; i < 4; i++) {
+            let dy = i
+            for (let j = 0; j < 4; j++) {
+                let dx = j
+                let c = new Cell(number, dx, dy)
+                cs.push(c)
+            }
+
+        }
+        //log('cs', cs)
+
+        let W1 = [
+            [],
+            [],
+            [],
+            [],
+        ]
+        let S1 = [
+            [],
+            [],
+            [],
+            [],
+        ]
+        let A1 = [
+            [],
+            [],
+            [],
+            [],
+        ]
+        let D1 = [
+            [],
+            [],
+            [],
+            [],
+        ]
+
+
+        let index = 0
+        for (let i = 0; i < 4; i++) {
+            let s = A1[i]
+            for (let j = 0; j < 4; j++) {
+                s.push(cs[index])
+                index += 1
+            }
+        }
+        //log('A1', A1)
+
+        let index3 = 15
+        for (let i = 3; i >= 0; i--) {
+            let s = D1[i]
+            for (let j = 3; j >= 0; j--) {
+                s.push(cs[index3])
+                index3 -= 1
+            }
+        }
+        //log('D1', D1)
+
+        let index5 = 0
+        for (let i = 0; i < 4; i++) {
+            let s = W1[i]
+            for (let j = 0; j < 4; j++) {
+                s.push(cs[index5])
+                index5 += 4
+            }
+            index5 -= 15
+        }
+        //log('W1', W1)
+
+        let index7 = 12
+        for (let i = 0; i < 4; i++) {
+            let s = S1[i]
+            for (let j = 0; j < 4; j++) {
+                s.push(cs[index7])
+                index7 -= 4
+            }
+            index7 += 17
+        }
+        //log('S1', S1)
+
+        const insert = () => {
+            let s = []
+            for (let i = 0; i < cs.length; i++) {
+                if (cs[i].number === 0) {
+                    s.push(cs[i])
+                }
+            }
+            let i = s.length
+            let j = Math.floor(i * Math.random())
+            s[j].number = 2
+        }
+
+        const insert2 = () => {
+            let s = []
+            for (let i = 0; i < cs.length; i++) {
+                if (cs[i].number === 0) {
+                    s.push(cs[i])
+                }
+            }
+            let i = s.length
+            let j = Math.floor(i * Math.random())
+            s[j].number = 2*Math.floor(2*Math.random()+1)
+        }
+
+        let data = A1
+        //log('data', data)
+
+        const bindAll = function (elements, eventName, callback) {
+            for (let i = 0; i < elements.length; i++) {
+                let tag = elements[i]
+                tag.addEventListener(eventName, callback)
+            }
+        }
+
+        const templateCell = function (line, x) {
+            let c = ''
+            for (let i = 0; i < line.length; i++) {
+                let c1 = line[i]
+                let c2 = '<div class="cell" data-number="' + c1.number + '" data-x="' + i + '" data-y="' + x + '">' + c1.number + '</div>'
+                c += c2
+            }
+            return c
+        }
+
+        const templategrid = function (data) {
+            let d = ''
+            for (let i = 0; i < data.length; i++) {
+                let grid = templateCell(data[i], i)
+                d += grid
+            }
+            return d
+        }
+
+        const renderdata = function (data) {
+            let grid = templategrid(data)
+            let div = e('#bottom')
+            div.innerHTML += grid
+        }
+
+
+        const bindEventDelegate = function () {
+            let ds = es('div[data-number = "0"]')
+            for (let i = 0; i < ds.length; i++) {
+                let e2 = ds[i]
+                e2.style.fontSize = "0px";
+            }
+
+        }
+        const clear = function () {
+            let div = e('#bottom')
+            div.innerHTML = ''
+        }
+
+        const update = function () {
+            clear()
+            insert2()
+            renderdata(data)
+            bindEventDelegate(data)
+        }
+
+        function keyboard(event) {
+            let k = event.keyCode;
+            if (k === 65 || k === 37) {
+                moverow(A1)
+                update()
+            }
+            if (k === 68 || k === 39) {
+                moverow(D1)
+                update()
+            }
+            if (k === 83 || k === 40) {
+                moverow(S1)
+                update()
+            }
+            if (k === 87 || k === 38) {
+                moverow(W1)
+                update()
+            }
+        }
+
+        insert()
+        insert()
+        renderdata(data)
+        bindEventDelegate(data)
+        document.addEventListener("keydown", keyboard);
+
+    }
+
+
+    const __main = function() {
+        newgame()
+    }
+
+    __main()
+
+</script>
+
+</body>
+</html>
