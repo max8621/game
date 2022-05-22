@@ -1,0 +1,27 @@
+
+#id-canvas{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: darkgreen;
+}
+#id-canvas2{
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+
+.canvas-wrapper {
+    position: relative;
+    width: 795px;
+    height: 750px;
+    /*border: 1px solid black;*/
+}
