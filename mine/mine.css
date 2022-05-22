@@ -1,0 +1,71 @@
+.cell {
+    float:          left;
+    width:          42px;
+    height:         42px;
+    margin:         1px;
+    background:     lightgray;
+    border-width:   8px;
+    border-style:   solid;
+    border-color:   lightgoldenrodyellow darkgray darkgrey lightgoldenrodyellow;
+    font-size:      0px;
+    left:           50%;
+    opacity:        100;
+    text-align:     center;
+
+
+}
+.cell:hover {
+    background:     lightgoldenrodyellow;
+
+}
+
+.row  {
+    position:       relative;
+    width:          540px;
+    height:         540px;
+    background:     lightgray;
+    top:            100px;
+    left:           50%;
+    transform:      translateX(-50%);
+    border-radius:  10px;
+
+}
+
+
+body {
+    width:          800px;
+    height:         800px;
+    margin:         0 auto;
+    font-family:    "黑体", "Times New Roman", sans-serif;
+}
+.open {
+    font-size:      30px;
+    background:     grey;
+}
+
+.wrap {
+    text-align: center;
+    position: relative;
+    left:           50%;
+    transform:      translateX(-50%);
+    display: inline-block;
+}
+
+.legend {
+    font-size: 14px;
+    margin: 0 auto;
+}
+p {
+    margin: 0 0 6px;
+}
+code {
+    background: lightgray;
+}
+.key {
+    color: red;
+}
+.click {
+    color: blue;
+}
+
+
